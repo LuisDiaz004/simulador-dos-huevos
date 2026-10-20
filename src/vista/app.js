@@ -1,4 +1,5 @@
-import { createGame, declareCriticalFloor, throwEgg, STRATEGIES, strategySteps, randomCriticalFloor } from './engine.js';
+import { createGame, declareCriticalFloor, throwEgg, randomCriticalFloor } from '../motor/engine.js';
+import { STRATEGIES, strategySteps } from '../estrategias/strategies.js';
 const $=id=>document.getElementById(id);
 let game=null, selectedFloor=50, round=0, toastTimer, animating=false, dragActive=false, dragPointer=null;
 let strategyActive=false, strategyPlan=[], strategyIndex=0;

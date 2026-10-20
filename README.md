@@ -2,6 +2,13 @@
 
 Pon a prueba el reto de encontrar el piso más alto desde el que el huevo todavía sobrevive. Tienes un edificio de 100 pisos y dos huevos. En la partida, el piso crítico se elige automáticamente para que puedas concentrarte en probar estrategias.
 
+## Organización del proyecto
+
+- `src/motor/`: reglas de la partida, estado del edificio y lanzamientos.
+- `src/vista/`: interfaz, eventos del jugador y estilos.
+- `src/estrategias/`: estrategias de búsqueda y simulación.
+- `tests/`: pruebas automatizadas de la lógica y las estrategias.
+
 ## Cómo jugar
 
 1. Arrastra un huevo desde el panel de partida hasta una ventana del edificio. Al soltarlo, comienza la caída. También puedes seleccionar un piso y pulsar **Soltar huevo**.
