@@ -46,7 +46,7 @@
       <div class="strategy-heading"><div><p class="eyebrow">PRUEBA Y COMPARA</p><h2 id="strategy-title">¿Qué estrategia encuentra antes el piso?</h2><p>Observa cada lanzamiento en el mismo edificio y compara el número de intentos.</p></div></div>
       <div class="strategy-controls">
         <label>Estrategia<select id="strategy-choice"><option value="linear">Lineal</option><option value="midpoint">Mitad</option><option value="ten-jumps">Saltos de 10</option><option value="optimal">Óptima</option></select></label>
-        <label>Piso crítico<input id="strategy-critical" type="number" min="1" max="101" value="72"><small>Usa 101 si ningún piso rompe.</small></label>
+        <label>Piso crítico<select id="strategy-floor-mode"><option value="manual">Elegir piso</option><option value="random">Al azar</option><option value="none">Ningún piso rompe</option></select><input id="strategy-critical" type="number" min="1" max="100" value="72"><small id="strategy-floor-help">Escribe un piso entre 1 y 100.</small></label>
         <button id="strategy-start" type="button">Iniciar simulación</button>
         <button id="strategy-next" type="button" disabled>Siguiente paso <span aria-hidden="true">→</span></button>
       </div>

@@ -1,5 +1,14 @@
 # Notas de versión
 
+## 1.0.1-beta.1 — 20 de octubre de 2026
+
+- Añade selección manual, aleatoria o sin piso crítico para la simulación paso a paso.
+- Mantiene el juego principal con piso aleatorio o escenario sin rotura.
+
+### Verificación
+
+`npm test`: 12 pruebas aprobadas con Jest.
+
 ## 1.0.0 — 20 de octubre de 2026
 
 - Juego interactivo con edificio de 100 pisos, dos huevos, arrastre y animación de caída.
@@ -13,4 +22,4 @@
 
 ### Verificación
 
-`npm test`: 10 pruebas aprobadas. La aplicación es estática y puede iniciarse con el servidor local indicado en el README.
+`npm test`: 11 pruebas aprobadas con Jest. La aplicación es estática y puede iniciarse con el servidor local indicado en el README.

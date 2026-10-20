@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createGame, throwEgg, declareCriticalFloor, runStrategy, strategySteps } from '../src/engine.js';
+import { createGame, throwEgg, declareCriticalFloor, runStrategy, strategySteps, randomCriticalFloor } from '../src/engine.js';
 test('genera partidas con dos huevos y contador inicial',()=>{const g=createGame(72);assert.equal(g.eggs,2);assert.equal(g.throws,0);});
 test('RN-03: se rompe en F o por encima y suma lanzamiento',()=>{const g=createGame(40);assert.equal(throwEgg(g,39).broke,false);assert.equal(throwEgg(g,40).broke,true);assert.equal(g.throws,2);assert.equal(g.eggs,1);});
 test('RN-04 y RN-05: no permite lanzar sin huevos y cuenta lanzamientos',()=>{const g=createGame(1);throwEgg(g,1);throwEgg(g,2);assert.equal(g.eggs,0);assert.throws(()=>throwEgg(g,3),/No quedan/);});
@@ -8,6 +8,7 @@ test('RN-08: declaración requiere demostrar S y S+1',()=>{const g=createGame(51
 test('SUP-02: declaración incorrecta o no demostrada termina y revela el valor real',()=>{const wrong=createGame(51);throwEgg(wrong,50);throwEgg(wrong,51);const a=declareCriticalFloor(wrong,49);assert.equal(a.correct,false);assert.equal(a.actualSafeFloor,50);assert.equal(wrong.finished,true);const unproven=createGame(40);const b=declareCriticalFloor(unproven,39);assert.equal(b.correct,false);assert.equal(unproven.finished,true);});
 test('SUP-03: el piso seguro puede ser cero cuando rompe desde el primero',()=>{const g=createGame(1);throwEgg(g,1);assert.equal(declareCriticalFloor(g,0).correct,true);});
 test('ningún piso rompe: solo se gana al demostrar los 100 pisos seguros',()=>{const g=createGame(null);for(let floor=1;floor<=100;floor++)throwEgg(g,floor);assert.equal(declareCriticalFloor(g,100).correct,true);const unproven=createGame(null);throwEgg(unproven,50);assert.equal(declareCriticalFloor(unproven,100).correct,false);});
+test('el modo aleatorio siempre genera un piso crítico entre 1 y 100',()=>{assert.equal(randomCriticalFloor(()=>0),1);assert.equal(randomCriticalFloor(()=>0.999999),100);assert.throws(()=>randomCriticalFloor(()=>1),RangeError);});
 test('simulación paso a paso coincide con el resultado completo',()=>{for(const id of ['linear','midpoint','ten-jumps','optimal']){const steps=strategySteps(id,72);const all=runStrategy(id,72);assert.equal(steps.length,all.throws);assert.equal(steps.at(-1).floor,all.game.history.at(-1).floor);}});
 test('estrategias siempre descubren F para todos los pisos y ninguno',()=>{for(const id of ['linear','midpoint','ten-jumps','optimal']) for(let f=1;f<=101;f++){const r=runStrategy(id,f===101?null:f);assert.equal(r.correct,true,`${id} F=${f}`);}});
 test('máximos de RN-12 para Mitad, Saltos de 10 y Óptima',()=>{for(let f=1;f<=101;f++){const critical=f===101?null:f;assert.ok(runStrategy('midpoint',critical).throws<=50);assert.ok(runStrategy('ten-jumps',critical).throws<=19);assert.ok(runStrategy('optimal',critical).throws<=14);}});
