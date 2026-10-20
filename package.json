@@ -1,9 +1,10 @@
 {
   "name": "simulador-dos-huevos",
-  "version": "1.0.1-beta.1",
+  "version": "1.0.1-beta.2",
   "private": true,
   "type": "module",
   "scripts": {
+    "start": "node server.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand"
   },
   "devDependencies": {
