@@ -32,7 +32,7 @@
       </div>
       <aside class="play-panel">
         <div class="panel-label">TU PARTIDA <span id="round-label">#01</span></div>
-        <label class="scenario-control" for="critical-mode">Piso crítico <select id="critical-mode"><option value="random">Se elige al azar</option><option value="none">Ningún piso rompe</option></select></label>
+
         <div class="egg-counter"><div><span class="counter-title">Huevos disponibles</span><div id="egg-icons" class="egg-icons" aria-label="2 huevos disponibles"></div></div><div class="throw-count"><strong id="throws">0</strong><span>LANZAMIENTOS</span></div></div>
         <div class="selection-box"><span class="selection-label">PISO SELECCIONADO</span><div class="selected-floor"><strong id="selected-floor">50</strong><span>º</span><span class="selected-suffix">PISO</span></div><p id="message" class="message" role="status" aria-live="polite">Toca una ventana del edificio para colocar el huevo.</p></div>
         <button id="launch" class="launch-button" type="button" disabled><span class="button-egg">🥚</span><span>Soltar huevo</span><span class="button-arrow">↗</span></button>
@@ -45,10 +45,14 @@
     <section class="strategy-lab" aria-labelledby="strategy-title">
       <div class="strategy-heading"><div><p class="eyebrow">PRUEBA Y COMPARA</p><h2 id="strategy-title">¿Qué estrategia encuentra antes el piso?</h2><p>Observa cada lanzamiento en el mismo edificio y compara el número de intentos.</p></div></div>
       <div class="strategy-controls">
-        <label>Estrategia<select id="strategy-choice"><option value="linear">Lineal</option><option value="midpoint">Mitad</option><option value="ten-jumps">Saltos de 10</option><option value="optimal">Óptima</option></select></label>
-        <label>Piso crítico<select id="strategy-floor-mode"><option value="manual">Elegir piso</option><option value="random">Al azar</option><option value="none">Ningún piso rompe</option></select><input id="strategy-critical" type="number" min="1" max="100" value="72"><small id="strategy-floor-help">Escribe un piso entre 1 y 100.</small></label>
-        <button id="strategy-start" type="button">Iniciar simulación</button>
-        <button id="strategy-next" type="button" disabled>Siguiente paso <span aria-hidden="true">→</span></button>
+        <div class="strategy-field"><label for="strategy-choice">Estrategia</label><select id="strategy-choice"><option value="linear">Lineal</option><option value="midpoint">Mitad</option><option value="ten-jumps">Saltos de 10</option><option value="optimal">Óptima</option></select></div>
+        <div class="strategy-floor-config">
+          <label for="strategy-floor-mode">Piso crítico</label>
+          <select id="strategy-floor-mode"><option value="manual">Elegir manualmente</option><option value="random">Al azar</option><option value="none">Ningún piso rompe</option></select>
+          <p id="strategy-floor-help" class="strategy-floor-help">Escribe el piso crítico que quieres probar.</p>
+          <div id="strategy-floor-field" class="strategy-floor-field"><label for="strategy-critical">Piso crítico (1–100)</label><input id="strategy-critical" type="number" min="1" max="100" value="72"></div>
+        </div>
+        <div class="strategy-actions"><button id="strategy-start" type="button">Iniciar simulación</button><button id="strategy-next" type="button" disabled>Siguiente paso <span aria-hidden="true">→</span></button></div>
       </div>
       <p id="strategy-status" class="strategy-status" role="status" aria-live="polite">Elige una estrategia y el piso crítico para verla en acción.</p>
       <div id="strategy-chart" class="strategy-chart" aria-label="Comparación del peor caso"></div>
@@ -57,7 +61,7 @@
   </main>
   <div id="result-overlay" class="result-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="result-title"><section id="result-card" class="result-card"><button id="result-close" class="result-close" type="button" aria-label="Cerrar resultado">×</button><div id="result-icon" class="result-icon" aria-hidden="true">🥚</div><p id="result-kicker" class="result-kicker">RESULTADO</p><h2 id="result-title">¡SOBREVIVIÓ!</h2><p id="result-copy" class="result-copy"></p><button id="result-continue" class="result-continue" type="button">Continuar</button></section></div>
   <div id="drag-ghost" class="drag-ghost" aria-hidden="true">🥚</div>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"><span id="toast-icon" class="toast-icon" aria-hidden="true"></span><span id="toast-text"></span></div>
   <script type="module" src="src/app.js"></script>
 </body>
 </html>

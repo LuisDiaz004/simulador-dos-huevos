@@ -1,6 +1,6 @@
 # Simulador de los 2 huevos
 
-Pon a prueba el reto de encontrar el piso más alto desde el que el huevo todavía sobrevive. Tienes un edificio de 100 pisos y dos huevos. Puedes dejar que el juego elija el piso crítico al azar o probar el escenario en que ningún piso rompe el huevo.
+Pon a prueba el reto de encontrar el piso más alto desde el que el huevo todavía sobrevive. Tienes un edificio de 100 pisos y dos huevos. En la partida, el piso crítico se elige automáticamente para que puedas concentrarte en probar estrategias.
 
 ## Cómo jugar
 
@@ -8,7 +8,7 @@ Pon a prueba el reto de encontrar el piso más alto desde el que el huevo todav�
 2. Si el huevo llega entero, ese piso queda marcado en verde y puedes volver a usarlo. Si se rompe, queda en rojo y pierdes ese huevo.
 3. Usa el segundo huevo para seguir acotando el piso crítico.
 4. Cuando tengas una respuesta, abre **¿Ya sabes la respuesta?** e indica el piso seguro más alto. Si el piso 1 rompe el huevo, la respuesta segura es 0; si ninguno se rompe, es 100.
-5. En **¿Qué estrategia encuentra antes el piso?**, elige una estrategia y un piso crítico manual, aleatorio o el escenario donde ninguno rompe. Avanza lanzamiento a lanzamiento y compara debajo el peor caso de cada estrategia.
+5. En **¿Qué estrategia encuentra antes el piso?**, elige una estrategia y el modo del piso crítico. Si eliges «Elegir manualmente», indica un piso; en los otros modos el campo se oculta. Avanza lanzamiento a lanzamiento y compara el peor caso de cada estrategia.
 6. Pulsa **Nueva partida** para volver a empezar. Si ya hiciste lanzamientos, el juego te pedirá confirmar antes de descartar la partida.
 
 ## Cómo iniciar en Windows

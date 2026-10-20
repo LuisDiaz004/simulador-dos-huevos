@@ -25,3 +25,23 @@
 .toast.throw-broken{background:#d94736;color:#fff;padding:16px 24px;font-size:.98rem;box-shadow:0 12px 34px #9b302b55;border:2px solid #ffc0ae}
 .toast.throw-survived.show,.toast.throw-broken.show{transform:translate(-50%,0)}
 @media(max-width:620px){.toast.throw-survived,.toast.throw-broken{width:calc(100% - 28px);white-space:normal;text-align:center;font-size:.88rem;padding:14px 18px}}
+
+/* Formulario de simulación agrupado y con el campo numérico solo en modo manual. */
+.strategy-controls{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:16px;align-items:stretch;margin-top:22px}
+.strategy-field,.strategy-floor-config{display:grid;align-content:start;gap:9px;padding:16px;border:1px solid #e3eaf3;border-radius:14px;background:#f8faff}
+.strategy-field>label,.strategy-floor-config>label{color:#526782;font-size:.7rem;font-weight:800;letter-spacing:.04em}
+.strategy-floor-config>select,.strategy-field>select{width:100%;min-height:44px;border:1px solid #d8e2ef;border-radius:10px;background:#fff;color:#263a55;padding:10px 12px;font:inherit;font-size:.83rem}
+.strategy-floor-help{min-height:30px;margin:0;color:#7789a1;font-size:.7rem;line-height:1.4}
+.strategy-floor-field{display:grid;gap:6px}
+.strategy-floor-field[hidden]{display:none}
+.strategy-floor-field label{color:#526782;font-size:.66rem;font-weight:800}
+.strategy-floor-field input{width:100%;min-height:42px;border:1px solid #d8e2ef;border-radius:10px;background:white;padding:9px 12px;font:inherit;color:#263a55}
+.strategy-floor-field input:disabled{background:#edf1f6;color:#98a5b5;cursor:not-allowed}
+.strategy-actions{grid-column:1/-1;display:flex;gap:12px}
+.strategy-actions button{flex:1;min-height:48px;border-radius:11px;font-size:.82rem}
+.strategy-status{padding:12px 14px;border:1px solid #e6ecf4;border-radius:11px;background:#f8faff;line-height:1.5}
+.strategy-chart{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;border:0;padding-top:8px}
+.strategy-bar-row{padding:13px;border:1px solid #e7edf5;border-radius:12px;background:#fff}
+.toast{display:flex;align-items:center;justify-content:center;gap:10px}
+.toast-icon{font-size:1.55rem;line-height:1}
+@media(max-width:620px){.strategy-controls{grid-template-columns:1fr;gap:11px}.strategy-actions{grid-column:1;flex-direction:column}.strategy-chart{grid-template-columns:1fr}.strategy-lab{padding:19px 16px}}
