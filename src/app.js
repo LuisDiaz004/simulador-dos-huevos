@@ -6,6 +6,7 @@ function makeBuilding(){
   const tower=$('tower');tower.innerHTML='';
   for(let f=100;f>=1;f--){
     const cell=document.createElement('button');cell.type='button';cell.className='floor';cell.dataset.floor=f;
+    if(f%10===0)cell.classList.add('floor-milestone');
     cell.setAttribute('aria-label',`Piso ${f}, suelta aquí el huevo`);cell.title=`Piso ${f}: arrastra aquí el huevo`;
     cell.innerHTML=`<span class="floor-number">${f}</span><span class="windows"><i></i><i></i></span><span class="egg-marker" aria-hidden="true">🥚</span>`;
     cell.addEventListener('click',()=>{if(!game||game.finished||animating)return;selectedFloor=f;draw();if(game.history.some(x=>x.floor===f))showToast('Ese piso ya fue probado.');});
@@ -30,17 +31,8 @@ function draw(){
     cell.classList.toggle('drop-target',dragActive);cell.disabled=!game||game.finished||animating;
   });
 }
-function showToast(text){const toast=$('toast');toast.textContent=text;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2000);}
+function showToast(text,kind=''){const toast=$('toast');toast.className=`toast ${kind} show`;toast.textContent=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toast.className='toast';},2800);}
 function startGame(force=false){if(!force&&game&&!game.finished&&!window.confirm('¿Empezar una partida nueva? Perderás el progreso actual.'))return;strategyActive=false;strategyPlan=[];strategyIndex=0;round++;game=createGame($('critical-mode').value==='none'?null:undefined);selectedFloor=50;animating=false;$('round-label').textContent=`#${String(round).padStart(2,'0')}`;$('guess-box').hidden=true;$('result-overlay').hidden=true;$('result-close').hidden=false;$('result-continue').onclick=null;setMessage('Arrastra un huevo hasta una ventana para probar ese piso.');$('strategy-status').textContent='Elige una estrategia y el piso crítico para verla en acción.';draw();}
-function showResult(broke,floor,repeated){
-  const overlay=$('result-overlay'),card=$('result-card');
-  card.className=`result-card ${broke?'result-broken':'result-survived'}`;
-  $('result-icon').textContent=repeated?'⚠️':broke?'🥚💥':'🥚✨';
-  $('result-kicker').textContent=repeated?'PISO YA PROBADO':broke?'IMPACTO':'CAÍDA COMPLETADA';
-  $('result-title').textContent=repeated?'¡YA CONOCÍAMOS EL RESULTADO!':broke?'¡SE ROMPIÓ!':'¡SOBREVIVIÓ!';
-  $('result-copy').textContent=repeated?`El piso ${floor} ya había sido probado. No suma un lanzamiento ni consume otro huevo.`:broke?`El huevo cayó desde el piso ${floor} y se hizo añicos al llegar al suelo.`:`El huevo cayó desde el piso ${floor} y llegó entero al suelo.`;
-  $('result-continue').textContent=strategyActive?'Volver a simulación':game.eggs===0?'Ver mi partida':'Continuar';overlay.hidden=false;$('result-continue').focus();
-}
 function animateFall(floor,broke){
   return new Promise(resolve=>{
     const cell=document.querySelector(`.floor[data-floor="${floor}"]`);const start=cell?.getBoundingClientRect();const ground=$('.ground-line')?.getBoundingClientRect();
@@ -67,7 +59,9 @@ async function launchAtFloor(floor){
   else if(result.broke){setMessage(`¡CRASH! El huevo se rompió en el piso ${floor}.`,'broken');}
   else{setMessage(`¡A salvo! El huevo sobrevivió al piso ${floor}.`,'safe');}
   if(strategyActive){strategyIndex++;$('strategy-status').textContent=`${$('strategy-choice').selectedOptions[0].text}: paso ${strategyIndex} de ${strategyPlan.length}. Se probó el piso ${floor}; ${result.broke?'se rompió.':'sobrevivió.'}`;if(strategyIndex>=strategyPlan.length){game.finished=true;const safe=game.highestSafe; $('strategy-status').textContent=`Simulación terminada: ${$('strategy-choice').selectedOptions[0].text} identificó que el piso seguro más alto es ${safe} en ${game.throws} lanzamientos.`;}}
-  showResult(result.broke,floor,result.repeated);
+  if(!strategyActive&&game.eggs===0){game.finished=true;$('guess-box').hidden=false;setMessage('Sin huevos: haz tu apuesta final.','notice');}
+  const feedback=result.repeated?'Ese piso ya fue comprobado.':result.broke?`¡SE ROMPIÓ! El huevo cayó desde el piso ${floor}.`:`¡SOBREVIVIÓ! El huevo llegó entero desde el piso ${floor}.`;
+  showToast(feedback,result.repeated?'':result.broke?'throw-broken':'throw-survived');
 }
 function finishResult(){
   $('result-overlay').hidden=true;
