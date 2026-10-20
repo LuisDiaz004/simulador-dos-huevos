@@ -14,7 +14,7 @@ export function throwEgg(game, floor) {
   if (game.eggs <= 0) throw new Error('No quedan huevos.');
   if (!Number.isInteger(floor) || floor < 1 || floor > FLOOR_COUNT) throw new RangeError('El piso debe estar entre 1 y 100.');
   const known = game.history.find(x => x.floor === floor);
-  if (known) return { ...known, repeated: true, game };
+  if (known) { game.throws++; return { ...known, repeated: true, game }; }
   const broke = game.criticalFloor !== null && floor >= game.criticalFloor;
   game.throws++;
   if (broke) { game.eggs--; game.lowestUnsafe = game.lowestUnsafe === null ? floor : Math.min(game.lowestUnsafe, floor); }
@@ -47,4 +47,5 @@ export function runStrategy(id, criticalFloor) {
   else throw new Error(`Estrategia desconocida: ${id}`);
   return { criticalFloor, throws: game.throws, eggs: game.eggs, highestSafe: game.highestSafe, lowestUnsafe: game.lowestUnsafe, correct: criticalFloor === null ? game.highestSafe === 100 : game.lowestUnsafe === criticalFloor && game.highestSafe === criticalFloor - 1, game };
 }
+
 
