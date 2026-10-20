@@ -1,6 +1,7 @@
-import { createGame, declareCriticalFloor, throwEgg } from './engine.js';
+import { createGame, declareCriticalFloor, throwEgg, STRATEGIES, strategySteps } from './engine.js';
 const $=id=>document.getElementById(id);
 let game=null, selectedFloor=50, round=0, toastTimer, animating=false, dragActive=false, dragPointer=null;
+let strategyActive=false, strategyPlan=[], strategyIndex=0;
 function makeBuilding(){
   const tower=$('tower');tower.innerHTML='';
   for(let f=100;f>=1;f--){
@@ -17,7 +18,9 @@ function draw(){
   const eggs=game?.eggs??2;
   $('egg-icons').innerHTML=Array.from({length:2},(_,i)=>`<button class="egg-icon ${i>=eggs?'used':''}" type="button" draggable="false" data-egg="${i}" aria-label="${i>=eggs?'Huevo usado':'Arrastrar huevo al edificio'}" ${i>=eggs||animating?'disabled':''}>🥚</button>`).join('');
   $('egg-icons').setAttribute('aria-label',`${eggs} huevos disponibles`);
-  $('launch').disabled=!game||game.finished||game.eggs===0||animating;
+  $('launch').disabled=!game||game.finished||game.eggs===0||animating||strategyActive;
+  $('strategy-next').disabled=!strategyActive||animating||strategyIndex>=strategyPlan.length;
+  $('critical-mode').disabled=Boolean(strategyActive||game?.throws&&!game.finished);
   const safeCount=game?.history.filter(x=>!x.broke).length??0;
   $('progress-label').textContent=`${safeCount} / 100`;$('progress-bar').style.width=`${safeCount}%`;
   $('progress-copy').textContent=game?.eggs===0?'Sin huevos: haz tu apuesta final.':safeCount?`Ya confirmaste ${safeCount} piso${safeCount===1?'':'s'} seguro${safeCount===1?'':'s'}.`:'Cada lanzamiento te acerca a la respuesta.';
@@ -28,15 +31,15 @@ function draw(){
   });
 }
 function showToast(text){const toast=$('toast');toast.textContent=text;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2000);}
-function startGame(){round++;game=createGame();selectedFloor=50;animating=false;$('round-label').textContent=`#${String(round).padStart(2,'0')}`;$('guess-box').hidden=true;$('result-overlay').hidden=true;setMessage('Arrastra un huevo hasta una ventana para probar ese piso.');draw();}
+function startGame(force=false){if(!force&&game&&!game.finished&&(game.throws>0||strategyActive)&&!window.confirm('¿Empezar una partida nueva? Perderás el progreso actual.'))return;strategyActive=false;strategyPlan=[];strategyIndex=0;round++;game=createGame($('critical-mode').value==='none'?null:undefined);selectedFloor=50;animating=false;$('round-label').textContent=`#${String(round).padStart(2,'0')}`;$('guess-box').hidden=true;$('result-overlay').hidden=true;$('result-close').hidden=false;$('result-continue').onclick=null;setMessage('Arrastra un huevo hasta una ventana para probar ese piso.');$('strategy-status').textContent='Elige una estrategia y el piso crítico para verla en acción.';draw();}
 function showResult(broke,floor,repeated){
   const overlay=$('result-overlay'),card=$('result-card');
   card.className=`result-card ${broke?'result-broken':'result-survived'}`;
   $('result-icon').textContent=repeated?'⚠️':broke?'🥚💥':'🥚✨';
   $('result-kicker').textContent=repeated?'PISO YA PROBADO':broke?'IMPACTO':'CAÍDA COMPLETADA';
   $('result-title').textContent=repeated?'¡YA CONOCÍAMOS EL RESULTADO!':broke?'¡SE ROMPIÓ!':'¡SOBREVIVIÓ!';
-  $('result-copy').textContent=repeated?`El piso ${floor} ya había sido probado. La repetición cuenta como lanzamiento, pero no consume otro huevo.`:broke?`El huevo cayó desde el piso ${floor} y se hizo añicos al llegar al suelo.`:`El huevo cayó desde el piso ${floor} y llegó entero al suelo.`;
-  $('result-continue').textContent=game.eggs===0?'Ver mi partida':'Continuar';overlay.hidden=false;$('result-continue').focus();
+  $('result-copy').textContent=repeated?`El piso ${floor} ya había sido probado. No suma un lanzamiento ni consume otro huevo.`:broke?`El huevo cayó desde el piso ${floor} y se hizo añicos al llegar al suelo.`:`El huevo cayó desde el piso ${floor} y llegó entero al suelo.`;
+  $('result-continue').textContent=strategyActive?'Volver a simulación':game.eggs===0?'Ver mi partida':'Continuar';overlay.hidden=false;$('result-continue').focus();
 }
 function animateFall(floor,broke){
   return new Promise(resolve=>{
@@ -54,18 +57,21 @@ function animateFall(floor,broke){
 }
 async function launchAtFloor(floor){
   if(!game||game.finished||animating||game.eggs===0)return;
+  if(game.history.some(item=>item.floor===floor)){setMessage(`El piso ${floor} ya fue probado. No cuenta como lanzamiento.`,'notice');showToast('Ese piso ya tiene resultado.');return;}
   selectedFloor=floor;animating=true;draw();
   let result;
   try{result=throwEgg(game,floor);}catch(e){animating=false;setMessage(e.message,'notice');draw();return;}
   await animateFall(floor,result.broke);
   animating=false;draw();
-  if(result.repeated){setMessage(`El piso ${floor} ya fue probado. La repetición cuenta como lanzamiento.`,'notice');showToast('Piso ya comprobado.');}
+  if(result.repeated){setMessage(`El piso ${floor} ya fue probado. No cuenta como lanzamiento.`,'notice');showToast('Piso ya comprobado.');}
   else if(result.broke){setMessage(`¡CRASH! El huevo se rompió en el piso ${floor}.`,'broken');}
   else{setMessage(`¡A salvo! El huevo sobrevivió al piso ${floor}.`,'safe');}
+  if(strategyActive){strategyIndex++;$('strategy-status').textContent=`${$('strategy-choice').selectedOptions[0].text}: paso ${strategyIndex} de ${strategyPlan.length}. Se probó el piso ${floor}; ${result.broke?'se rompió.':'sobrevivió.'}`;if(strategyIndex>=strategyPlan.length){game.finished=true;const safe=game.highestSafe; $('strategy-status').textContent=`Simulación terminada: ${$('strategy-choice').selectedOptions[0].text} identificó que el piso seguro más alto es ${safe} en ${game.throws} lanzamientos.`;}}
   showResult(result.broke,floor,result.repeated);
 }
 function finishResult(){
   $('result-overlay').hidden=true;
+  if(strategyActive){if(strategyIndex<strategyPlan.length)$('strategy-next').focus();draw();return;}
   if(game?.eggs===0){game.finished=true;$('guess-box').hidden=false;setMessage('Te quedaste sin huevos. Haz tu apuesta final.','notice');}
   draw();
 }
@@ -86,9 +92,12 @@ function endDrag(event){
   if(floor)launchAtFloor(floor);
 }
 $('egg-icons').addEventListener('pointerdown',beginDrag);document.addEventListener('pointermove',moveDrag);document.addEventListener('pointerup',endDrag);document.addEventListener('pointercancel',endDrag);
-$('launch').addEventListener('click',()=>launchAtFloor(selectedFloor));$('reset').addEventListener('click',startGame);
+$('launch').addEventListener('click',()=>launchAtFloor(selectedFloor));$('reset').addEventListener('click',()=>startGame());
 $('result-close').addEventListener('click',finishResult);$('result-continue').addEventListener('click',finishResult);
 $('result-overlay').addEventListener('click',e=>{if(e.target===$('result-overlay'))finishResult();});
 $('guess-toggle').addEventListener('click',()=>{$('guess-box').hidden=!$('guess-box').hidden;});
-$('declare').addEventListener('click',()=>{if(!game)return;const value=Number($('answer').value);const r=declareCriticalFloor(game,value);if(r.correct){setMessage(`¡Lo encontraste! El piso ${value+1} es el primero que rompe el huevo.`,'safe');game.finished=true;showToast('¡Respuesta correcta! 🎉');}else{setMessage(r.reason,'notice');showToast('Todavía no. ¡Sigue pensando!');}draw();});
-makeBuilding();startGame();
+$('declare').addEventListener('click',()=>{if(!game)return;const value=Number($('answer').value);try{const r=declareCriticalFloor(game,value);const title=r.correct?'¡LO ENCONTRASTE!':'NO ERA ESE PISO';$('result-card').className=`result-card ${r.correct?'result-survived':'result-broken'}`;$('result-icon').textContent=r.correct?'🏆':'🥚💥';$('result-kicker').textContent=r.correct?'RETO COMPLETADO':'PARTIDA TERMINADA';$('result-title').textContent=title;$('result-copy').textContent=r.actualSafeFloor===100?`${r.reason} Ninguno de los 100 pisos rompe el huevo.`:`${r.reason} El piso seguro más alto era ${r.actualSafeFloor}; el piso ${r.actualSafeFloor+1} es el primero que rompe el huevo.`;$('result-continue').textContent='Nueva partida';$('result-overlay').hidden=false;$('result-continue').onclick=()=>{ $('result-continue').onclick=null;finishResult();startGame(true);};$('result-close').hidden=true;draw();}catch(e){setMessage(e.message,'notice');}});
+function renderStrategyChart(){const chart=$('strategy-chart');chart.innerHTML=STRATEGIES.map(s=>`<div class="strategy-bar-row"><span>${s.name}</span><div class="strategy-bar-track"><i style="width:${s.worstCase}%"></i></div><strong>${s.worstCase}</strong></div>`).join('');}
+$('strategy-start').addEventListener('click',()=>{if(game&&!game.finished&&(game.throws>0||strategyActive)&&!window.confirm('¿Iniciar esta simulación? Se reemplazará la partida actual.'))return;const raw=Number($('strategy-critical').value);if(!Number.isInteger(raw)||raw<1||raw>101){$('strategy-critical').focus();$('strategy-status').textContent='Escribe un piso entre 1 y 100, o 101 si ningún piso rompe.';return;}const id=$('strategy-choice').value;strategyPlan=strategySteps(id,raw===101?null:raw);strategyIndex=0;strategyActive=true;game=createGame(raw===101?null:raw);game.history=[];game.throws=0;game.eggs=2;game.lowestUnsafe=null;game.highestSafe=0;game.finished=false;selectedFloor=strategyPlan[0]?.floor??50;$('guess-box').hidden=true;$('result-overlay').hidden=true;$('result-close').hidden=false;$('result-continue').onclick=null;$('strategy-status').textContent=`Simulación lista: ${$('strategy-choice').selectedOptions[0].text}, piso crítico ${raw===101?'ninguno':raw}. Pulsa «Siguiente paso».`;setMessage('Modo simulación: avanza lanzamiento por lanzamiento.');draw();});
+$('strategy-next').addEventListener('click',()=>{if(!strategyActive||strategyIndex>=strategyPlan.length)return;launchAtFloor(strategyPlan[strategyIndex].floor);});
+makeBuilding();renderStrategyChart();startGame(true);

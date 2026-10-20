@@ -32,6 +32,7 @@
       </div>
       <aside class="play-panel">
         <div class="panel-label">TU PARTIDA <span id="round-label">#01</span></div>
+        <label class="scenario-control" for="critical-mode">Piso crítico <select id="critical-mode"><option value="random">Se elige al azar</option><option value="none">Ningún piso rompe</option></select></label>
         <div class="egg-counter"><div><span class="counter-title">Huevos disponibles</span><div id="egg-icons" class="egg-icons" aria-label="2 huevos disponibles"></div></div><div class="throw-count"><strong id="throws">0</strong><span>LANZAMIENTOS</span></div></div>
         <div class="selection-box"><span class="selection-label">PISO SELECCIONADO</span><div class="selected-floor"><strong id="selected-floor">50</strong><span>º</span><span class="selected-suffix">PISO</span></div><p id="message" class="message" role="status" aria-live="polite">Toca una ventana del edificio para colocar el huevo.</p></div>
         <button id="launch" class="launch-button" type="button" disabled><span class="button-egg">🥚</span><span>Soltar huevo</span><span class="button-arrow">↗</span></button>
@@ -40,6 +41,17 @@
         <button id="guess-toggle" class="guess-toggle" type="button">¿Ya sabes la respuesta? <span>+</span></button>
         <div id="guess-box" class="guess-box" hidden><label for="answer">¿Cuál es el piso más alto seguro?</label><div class="guess-row"><input id="answer" type="number" min="0" max="100" placeholder="0–100"><button id="declare" type="button">Comprobar</button></div></div>
       </aside>
+    </section>
+    <section class="strategy-lab" aria-labelledby="strategy-title">
+      <div class="strategy-heading"><div><p class="eyebrow">PRUEBA Y COMPARA</p><h2 id="strategy-title">¿Qué estrategia encuentra antes el piso?</h2><p>Observa cada lanzamiento en el mismo edificio y compara el número de intentos.</p></div></div>
+      <div class="strategy-controls">
+        <label>Estrategia<select id="strategy-choice"><option value="linear">Lineal</option><option value="midpoint">Mitad</option><option value="ten-jumps">Saltos de 10</option><option value="optimal">Óptima</option></select></label>
+        <label>Piso crítico<input id="strategy-critical" type="number" min="1" max="101" value="72"><small>Usa 101 si ningún piso rompe.</small></label>
+        <button id="strategy-start" type="button">Iniciar simulación</button>
+        <button id="strategy-next" type="button" disabled>Siguiente paso <span aria-hidden="true">→</span></button>
+      </div>
+      <p id="strategy-status" class="strategy-status" role="status" aria-live="polite">Elige una estrategia y el piso crítico para verla en acción.</p>
+      <div id="strategy-chart" class="strategy-chart" aria-label="Comparación del peor caso"></div>
     </section>
     <footer><span>Un problema clásico. Dos huevos. Cien pisos.</span><span>Juega y descubre la estrategia.</span></footer>
   </main>
