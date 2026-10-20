@@ -14,7 +14,7 @@ export function throwEgg(game, floor) {
   if (game.eggs <= 0) throw new Error('No quedan huevos.');
   if (!Number.isInteger(floor) || floor < 1 || floor > FLOOR_COUNT) throw new RangeError('El piso debe estar entre 1 y 100.');
   const known = game.history.find(x => x.floor === floor);
-  if (known) { game.throws++; return { ...known, repeated: true, game }; }
+  if (known) return { ...known, repeated: true, game };
   const broke = game.criticalFloor !== null && floor >= game.criticalFloor;
   game.throws++;
   if (broke) { game.eggs--; game.lowestUnsafe = game.lowestUnsafe === null ? floor : Math.min(game.lowestUnsafe, floor); }
@@ -25,12 +25,12 @@ export function throwEgg(game, floor) {
 }
 export function declareCriticalFloor(game, safeFloor) {
   if (!Number.isInteger(safeFloor) || safeFloor < 0 || safeFloor > FLOOR_COUNT) throw new RangeError('S debe estar entre 0 y 100.');
-  if (game.eggs === 0 && game.highestSafe < safeFloor) return { correct: false, reason: 'Sin huevos y sin certeza suficiente.' };
   const proven = game.highestSafe >= safeFloor && (safeFloor === FLOOR_COUNT || game.lowestUnsafe !== null && game.lowestUnsafe <= safeFloor + 1);
   const actual = game.criticalFloor === null ? safeFloor === FLOOR_COUNT : safeFloor === game.criticalFloor - 1;
-  const correct = safeFloor === FLOOR_COUNT ? (game.criticalFloor === null || game.criticalFloor === FLOOR_COUNT + 1) && game.highestSafe === FLOOR_COUNT : proven && actual;
-  if (correct) game.finished = true;
-  return { correct, reason: correct ? '¡Correcto! Declaración demostrada.' : proven ? 'La declaración no coincide con el resultado.' : 'Todavía no hay evidencia suficiente para demostrarlo.' };
+  const correct = (safeFloor === FLOOR_COUNT ? (game.criticalFloor === null || game.criticalFloor === FLOOR_COUNT + 1) : actual) && proven;
+  game.finished = true;
+  return { correct, proven, actualSafeFloor: game.criticalFloor === null ? FLOOR_COUNT : game.criticalFloor - 1,
+    reason: correct ? '¡Correcto! Declaración demostrada.' : proven ? 'La respuesta no coincide con el piso crítico.' : 'La respuesta no estaba demostrada con los lanzamientos realizados.' };
 }
 export function optimalFloors(maxFloor = FLOOR_COUNT) {
   const floors = []; let floor = 0, step = 14;
@@ -46,6 +46,12 @@ export function runStrategy(id, criticalFloor) {
   else if (id === 'midpoint') { const first=test(50); if(first?.broke && game.eggs>0) { for(let f=1;f<50;f++){const q=test(f); if(q?.broke) break;} } else if(first && !first.broke) { for(const f of optimalFloors(100).filter(x=>x>50)){ const r=test(f); if(r?.broke){ if(game.eggs>0) for(let x=game.highestSafe+1;x<f;x++) { const q=test(x); if(q?.broke) break; } break; } } if(game.lowestUnsafe===null && criticalFloor===null && game.highestSafe<100)test(100); } }
   else throw new Error(`Estrategia desconocida: ${id}`);
   return { criticalFloor, throws: game.throws, eggs: game.eggs, highestSafe: game.highestSafe, lowestUnsafe: game.lowestUnsafe, correct: criticalFloor === null ? game.highestSafe === 100 : game.lowestUnsafe === criticalFloor && game.highestSafe === criticalFloor - 1, game };
+}
+
+// Devuelve cada lanzamiento de una estrategia en orden, para reproducirla paso a paso.
+export function strategySteps(id, criticalFloor) {
+  const result = runStrategy(id, criticalFloor);
+  return result.game.history.map(item => ({ ...item }));
 }
 
 
