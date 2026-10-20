@@ -1,6 +1,6 @@
 # Simulador de los 2 huevos
 
-Aplicación web didáctica para explorar el problema de los 2 huevos y los 100 pisos como prototipo RUP de Elaboración (P5).
+Aplicación web didáctica para explorar el problema de los 2 huevos y los 100 pisos como prototipo RUP de Elaboración.
 
 ## Requisitos cubiertos
 - RN-02: F aleatorio entre 1 y 100 o escenario de huevo irrompible.
