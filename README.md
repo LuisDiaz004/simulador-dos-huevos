@@ -11,17 +11,22 @@ Pon a prueba el reto de encontrar el piso más alto desde el que el huevo todav�
 5. En **¿Qué estrategia encuentra antes el piso?**, elige una estrategia y un piso crítico manual, aleatorio o el escenario donde ninguno rompe. Avanza lanzamiento a lanzamiento y compara debajo el peor caso de cada estrategia.
 6. Pulsa **Nueva partida** para volver a empezar. Si ya hiciste lanzamientos, el juego te pedirá confirmar antes de descartar la partida.
 
-## Cómo iniciar el juego
+## Cómo iniciar en Windows
 
-Abre una terminal en la carpeta del proyecto y ejecuta:
+No necesitas instalar Python, Node.js ni paquetes. Con PowerShell, incluido en Windows:
+
+1. Descarga el proyecto desde GitHub y descomprime el ZIP, o abre la carpeta del proyecto si ya la tienes.
+2. En el Explorador de archivos, abre la carpeta del proyecto, haz clic en la barra de direcciones, escribe `powershell` y pulsa Enter.
+3. Ejecuta:
 
 ```powershell
-npm start
+powershell -NoProfile -ExecutionPolicy Bypass -File .\start-server.ps1
 ```
 
-Abre la dirección que imprime la terminal (normalmente [http://127.0.0.1:8000](http://127.0.0.1:8000)) en Chrome o Firefox. Para detener el servidor, vuelve a la terminal y pulsa `Ctrl+C`. El servidor usa Node.js y no necesita instalar paquetes adicionales para iniciar el juego.
+4. Abre en el navegador la dirección que aparecerá en la terminal, normalmente [http://127.0.0.1:8000](http://127.0.0.1:8000).
+5. Para cerrar el servidor, vuelve a esa ventana y pulsa `Ctrl+C`.
 
-Si el puerto 8000 ya está ocupado, el servidor prueba automáticamente los siguientes puertos disponibles.
+El script usa componentes de Windows, solo acepta conexiones de tu propio equipo y, si el puerto 8000 está ocupado, prueba automáticamente los siguientes. También puedes elegir otro puerto, por ejemplo: `powershell -NoProfile -ExecutionPolicy Bypass -File .\start-server.ps1 -Port 8080`.
 
 ## Nota sobre la partida
 
