@@ -1,31 +1,25 @@
 # Simulador de los 2 huevos
 
-Aplicación web didáctica para explorar el problema de los 2 huevos y los 100 pisos como prototipo RUP de Elaboración (P5).
+Pon a prueba el reto de encontrar el piso más alto desde el que el huevo todavía sobrevive. Tienes un edificio de 100 pisos y dos huevos. El piso crítico se elige al azar y se mantiene oculto.
 
-## Requisitos cubiertos
-- RN-02: F aleatorio entre 1 y 100 o escenario de huevo irrompible.
-- RN-03 a RN-05: regla de ruptura, dos huevos y contador de lanzamientos.
-- RN-06: pisos seguros en verde y pisos de ruptura en rojo.
-- RN-07: avisa cuando se repite un piso cuyo resultado ya se conoce; el lanzamiento repetido también se cuenta.
-- RN-08 y RN-09: valida la declaración del piso crítico y los límites de la partida.
-- RN-10: modos Lineal, Mitad, Saltos de 10 y Óptima.
+## Cómo jugar
 
-El estado de la partida permanece en memoria; no se guarda información.
+1. Arrastra un huevo desde el panel de partida hasta una ventana del edificio. Al soltarlo, comienza la caída. También puedes seleccionar un piso y pulsar **Soltar huevo**.
+2. Si el huevo llega entero, ese piso queda marcado en verde y puedes volver a usarlo. Si se rompe, queda en rojo y pierdes ese huevo.
+3. Usa el segundo huevo para seguir acotando el piso crítico.
+4. Cuando tengas una respuesta, abre **¿Ya sabes la respuesta?** e indica el piso seguro más alto. Si el piso 1 rompe el huevo, la respuesta segura es 0; si ninguno se rompe, es 100.
+5. Pulsa **Nueva partida** para volver a empezar.
 
-## Uso
-Sirve el proyecto con un servidor local (los módulos JavaScript no funcionan al abrir `index.html` directamente como archivo). Desde esta carpeta ejecuta `py -m http.server 8000` y abre `http://localhost:8000`. Para ejecutar las pruebas unitarias se requiere Node.js 18 o posterior:
+## Cómo iniciar el juego
 
-```bash
-node --test
+Abre PowerShell en la carpeta del proyecto y ejecuta:
+
+```powershell
+py -m http.server 8000
 ```
 
-## Estructura
-- `index.html`: pantalla del simulador.
-- `src/engine.js`: motor independiente de la interfaz.
-- `src/app.js`, `src/styles.css`: interfaz y presentación.
-- `tests/engine.test.js`: pruebas unitarias de reglas y estrategias.
+Luego abre [http://localhost:8000](http://localhost:8000) en Chrome o Firefox. Para detener el servidor, vuelve a PowerShell y pulsa `Ctrl+C`.
 
-## Ramas y commits
-- `main`: estructura inicial y documentación.
-- `develop`: implementación del motor, simulador y pruebas.
+## Nota sobre la partida
 
+La partida se mantiene solo mientras la página está abierta. Si la recargas, comienza una partida nueva; el juego no guarda resultados.
