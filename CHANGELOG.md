@@ -1,5 +1,16 @@
 # Notas de versión
 
+## 1.0.1-beta.2 — 20 de octubre de 2026
+
+- Añade selección manual, aleatoria o sin piso crítico para la simulación paso a paso.
+- Mantiene el juego principal con piso aleatorio o escenario sin rotura.
+- Muestra los lanzamientos usados al declarar el resultado y aplica el escenario elegido al instante.
+- Añade un servidor local de Node.js para iniciar el juego sin depender de Python.
+
+### Verificación
+
+`npm test`: 12 pruebas aprobadas con Jest.
+
 ## 1.0.1-beta.1 — 20 de octubre de 2026
 
 - Añade selección manual, aleatoria o sin piso crítico para la simulación paso a paso.

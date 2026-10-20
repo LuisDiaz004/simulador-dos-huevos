@@ -13,13 +13,15 @@ Pon a prueba el reto de encontrar el piso más alto desde el que el huevo todav�
 
 ## Cómo iniciar el juego
 
-Abre PowerShell en la carpeta del proyecto y ejecuta:
+Abre una terminal en la carpeta del proyecto y ejecuta:
 
 ```powershell
-py -m http.server 8000
+npm start
 ```
 
-Luego abre [http://localhost:8000](http://localhost:8000) en Chrome o Firefox. Para detener el servidor, vuelve a PowerShell y pulsa `Ctrl+C`.
+Abre la dirección que imprime la terminal (normalmente [http://127.0.0.1:8000](http://127.0.0.1:8000)) en Chrome o Firefox. Para detener el servidor, vuelve a la terminal y pulsa `Ctrl+C`. El servidor usa Node.js y no necesita instalar paquetes adicionales para iniciar el juego.
+
+Si el puerto 8000 ya está ocupado, el servidor prueba automáticamente los siguientes puertos disponibles.
 
 ## Nota sobre la partida
 
