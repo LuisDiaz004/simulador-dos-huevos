@@ -1,4 +1,9 @@
 export const FLOOR_COUNT = 100;
+export function randomCriticalFloor(random = Math.random) {
+  const value = random();
+  if (typeof value !== 'number' || value < 0 || value >= 1) throw new RangeError('El generador debe devolver un número entre 0 y 1.');
+  return Math.floor(value * FLOOR_COUNT) + 1;
+}
 export const STRATEGIES = Object.freeze([
   { id: 'linear', name: 'Lineal', worstCase: 100 },
   { id: 'midpoint', name: 'Mitad', worstCase: 50 },
