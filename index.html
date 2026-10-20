@@ -14,7 +14,7 @@
       <button id="reset" class="new-game" type="button"><span aria-hidden="true">↻</span> Nueva partida</button>
     </header>
     <section class="intro">
-      <div><p class="eyebrow">EL RETO DE LOS DOS HUEVOS</p><h1>¿Desde qué piso<br><em>se rompe?</em></h1><p class="intro-copy">Elige un piso, coloca el huevo y déjalo caer.<br>¿Podrás descubrir el límite antes de quedarte sin huevos?</p></div>
+      <div><p class="eyebrow">EL RETO DE LOS DOS HUEVOS</p><h1>¿Desde qué piso<br><em>se rompe?</em></h1><p class="intro-copy">Arrastra un huevo hasta un piso y suéltalo.<br>¿Llegará entero hasta el suelo?</p></div>
       <div class="intro-art" aria-hidden="true"><span class="sun"></span><span class="cloud cloud-a"></span><span class="cloud cloud-b"></span><span class="bird">✦</span></div>
     </section>
     <section class="game-layout" aria-label="Juego de los cien pisos">
@@ -35,7 +35,7 @@
         <div class="egg-counter"><div><span class="counter-title">Huevos disponibles</span><div id="egg-icons" class="egg-icons" aria-label="2 huevos disponibles"></div></div><div class="throw-count"><strong id="throws">0</strong><span>LANZAMIENTOS</span></div></div>
         <div class="selection-box"><span class="selection-label">PISO SELECCIONADO</span><div class="selected-floor"><strong id="selected-floor">50</strong><span>º</span><span class="selected-suffix">PISO</span></div><p id="message" class="message" role="status" aria-live="polite">Toca una ventana del edificio para colocar el huevo.</p></div>
         <button id="launch" class="launch-button" type="button" disabled><span class="button-egg">🥚</span><span>Soltar huevo</span><span class="button-arrow">↗</span></button>
-        <p class="launch-hint">Selecciona un piso y pulsa para lanzar</p>
+        <p class="launch-hint">O selecciona un piso y pulsa para lanzar</p>
         <div class="progress-block"><div class="progress-head"><span>PISTAS DESCUBIERTAS</span><span id="progress-label">0 / 100</span></div><div class="progress-track"><span id="progress-bar"></span></div><p id="progress-copy">Cada lanzamiento te acerca a la respuesta.</p></div>
         <button id="guess-toggle" class="guess-toggle" type="button">¿Ya sabes la respuesta? <span>+</span></button>
         <div id="guess-box" class="guess-box" hidden><label for="answer">¿Cuál es el piso más alto seguro?</label><div class="guess-row"><input id="answer" type="number" min="0" max="100" placeholder="0–100"><button id="declare" type="button">Comprobar</button></div></div>
@@ -43,7 +43,11 @@
     </section>
     <footer><span>Un problema clásico. Dos huevos. Cien pisos.</span><span>Juega y descubre la estrategia.</span></footer>
   </main>
+  <div id="result-overlay" class="result-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="result-title"><section id="result-card" class="result-card"><button id="result-close" class="result-close" type="button" aria-label="Cerrar resultado">×</button><div id="result-icon" class="result-icon" aria-hidden="true">🥚</div><p id="result-kicker" class="result-kicker">RESULTADO</p><h2 id="result-title">¡SOBREVIVIÓ!</h2><p id="result-copy" class="result-copy"></p><button id="result-continue" class="result-continue" type="button">Continuar</button></section></div>
+  <div id="drag-ghost" class="drag-ghost" aria-hidden="true">🥚</div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script type="module" src="src/app.js"></script>
 </body>
 </html>
+
+
